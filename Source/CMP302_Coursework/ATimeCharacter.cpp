@@ -38,11 +38,11 @@ void ATimeCharacter::RewindTime()
 {
 	GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Green, TEXT("Hello this is the rewind time!!"));
 	TArray<AActor*> timeCubes;
-	TSubclassOf<ATimeCube> sub;
-	UGameplayStatics::GetAllActorsOfClass(this, sub, timeCubes);
-	for (auto cube : timeCubes)
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeCube::StaticClass(), timeCubes);
+	for (AActor* a : timeCubes)
 	{
-		ATimeCube* timeCube = static_cast<ATimeCube*>(cube);
+		GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Green, TEXT("Rewinding for cube: "));
+		ATimeCube* timeCube = Cast<ATimeCube>(a);
 		timeCube->Rewind();
 	}
 }

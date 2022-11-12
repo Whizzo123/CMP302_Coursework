@@ -18,7 +18,17 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+	TArray<FVector> mRecordedPositions;
+	int32 mRewindIndex;
+	UPROPERTY(EditAnywhere)
+		int32 mStepsToRewind;
+	UStaticMeshComponent* mStaticMesh;
+	bool mRewinding;
+	bool mMoving;
+	FVector mLastPosition;
+	float mVelocityThreshold;
+	float mRewindSpeed;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
