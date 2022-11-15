@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ATimeCube.generated.h"
 
+
 UCLASS()
 class CMP302_COURSEWORK_API ATimeCube : public AActor
 {
@@ -18,7 +19,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	TArray<FVector> mRecordedPositions;
+	UPROPERTY(EditAnywhere)
+		TArray<FVector> mRecordedPositions;
 	int32 mRewindIndex;
 	UPROPERTY(EditAnywhere)
 		int32 mStepsToRewind;
@@ -26,9 +28,14 @@ protected:
 	bool mRewinding;
 	bool mMoving;
 	FVector mLastPosition;
-	float mVelocityThreshold;
-	float mRewindSpeed;
+	UPROPERTY(EditAnywhere)
+		float mVelocityThreshold;
+	UPROPERTY(EditAnywhere)
+		float mRewindSpeed;
 
+protected:
+	void Delay(float duration, float deltaTime);
+	void PrintToScreen(FString message);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
