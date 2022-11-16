@@ -45,5 +45,12 @@ void ATimeCharacter::RewindTime()
 		ATimeCube* timeCube = Cast<ATimeCube>(a);
 		timeCube->Rewind();
 	}
+	TArray<AActor*> timeSpeedCubes;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeSpeedCube::StaticClass(), timeSpeedCubes);
+	for (AActor* a : timeSpeedCubes)
+	{
+		ATimeSpeedCube* timeSpeedCube = Cast<ATimeSpeedCube>(a);
+		timeSpeedCube->TimeEffect();
+	}
 }
 

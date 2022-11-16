@@ -32,10 +32,8 @@ void ATimeCube::Tick(float DeltaTime)
 	if (mRewinding)
 	{
 		FString text = "rewindTick";
-		PrintToScreen(text);
 		if (mRewindIndex < 0)
 		{
-			PrintToScreen("Finished rewind");
 			mRewinding = false;
 			mStaticMesh->SetSimulatePhysics(true);
 			mRecordedPositions.Empty();
@@ -56,7 +54,6 @@ void ATimeCube::Tick(float DeltaTime)
 		Delay(3.0f, DeltaTime);
 		if (mStaticMesh->GetPhysicsLinearVelocity().Length() > mVelocityThreshold)
 		{
-			PrintToScreen("Past Threshold");
 			mMoving = true;
 			mRecordedPositions.Add(mStaticMesh->GetComponentLocation());
 		}
@@ -70,7 +67,6 @@ void ATimeCube::Tick(float DeltaTime)
 
 void ATimeCube::Rewind()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("REWINDING HERE WE GO!!!!"));
 	// Determine how far back to rewind
 	mRewindIndex = mRecordedPositions.Num() - 1;
 	// Disable physics

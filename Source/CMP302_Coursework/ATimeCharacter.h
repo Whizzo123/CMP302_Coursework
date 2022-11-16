@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "ATimeCube.h"
+#include "TimeSpeedCube.h"
 #include "ATimeCharacter.generated.h"
 
 
