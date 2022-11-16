@@ -10,6 +10,9 @@ ATimeCube::ATimeCube()
 	PrimaryActorTick.bCanEverTick = true;
 	mVelocityThreshold = 0.05f;
 	mRewinding = false;
+	mStepsToRewind = 20;
+	mRewindSpeed = 10.0f;
+	mRewindIndex = -1;
 }
 
 // Called when the game starts or when spawned
@@ -32,6 +35,7 @@ void ATimeCube::Tick(float DeltaTime)
 		PrintToScreen(text);
 		if (mRewindIndex < 0)
 		{
+			PrintToScreen("Finished rewind");
 			mRewinding = false;
 			mStaticMesh->SetSimulatePhysics(true);
 			mRecordedPositions.Empty();
@@ -39,23 +43,22 @@ void ATimeCube::Tick(float DeltaTime)
 		else
 		{
 			FVector rewindPos = mRecordedPositions[mRewindIndex];
-			FVector currentLocation = GetActorLocation();
-			FVector newLocation = FMath::Lerp(currentLocation, rewindPos, mRewindSpeed);
-			SetActorLocation(newLocation, false, nullptr, ETeleportType::TeleportPhysics);
-			if(FVector::Dist(GetActorLocation(), rewindPos) < 5.0f)
+			FVector currentLocation = mStaticMesh->GetComponentLocation();
+			FVector newLocation = FMath::Lerp(currentLocation, rewindPos, mRewindSpeed * DeltaTime);
+			mStaticMesh->SetWorldLocation(newLocation, false, nullptr, ETeleportType::TeleportPhysics);
+			if(FVector::Dist(mStaticMesh->GetComponentLocation(), rewindPos) < 5.0f)
 				mRewindIndex = mRewindIndex - 1;
 		}
 	}
 	else
 	{
 		// Delay
-		Delay(0.4f, DeltaTime);
+		Delay(3.0f, DeltaTime);
 		if (mStaticMesh->GetPhysicsLinearVelocity().Length() > mVelocityThreshold)
 		{
-			
 			PrintToScreen("Past Threshold");
 			mMoving = true;
-			mRecordedPositions.Add(GetActorLocation());
+			mRecordedPositions.Add(mStaticMesh->GetComponentLocation());
 		}
 		else
 		{
@@ -69,7 +72,7 @@ void ATimeCube::Rewind()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("REWINDING HERE WE GO!!!!"));
 	// Determine how far back to rewind
-	mRewindIndex = mRecordedPositions.Num() - mStepsToRewind;
+	mRewindIndex = mRecordedPositions.Num() - 1;
 	// Disable physics
 	mStaticMesh->SetSimulatePhysics(false);
 	mRewinding = true;
