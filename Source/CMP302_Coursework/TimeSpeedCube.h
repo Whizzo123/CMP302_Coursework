@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "TimeAffected.h"
 #include "TimeSpeedCube.generated.h"
 
 UCLASS()
-class CMP302_COURSEWORK_API ATimeSpeedCube : public AActor
+class CMP302_COURSEWORK_API ATimeSpeedCube : public ATimeAffected
 {
 	GENERATED_BODY()
 	
@@ -29,8 +29,7 @@ public:
 		bool mSpeedUp;
 	bool mUnderTimeEffect;
 	UStaticMeshComponent* mStaticMesh;
-	UFUNCTION(BlueprintCallable)
-		void TimeEffect();
+	virtual void OnTimeEffect() override;
 	void PrintToScreen(FString text);
 protected:
 	// Called when the game starts or when spawned

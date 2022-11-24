@@ -7,7 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "ATimeCube.h"
 #include "TimeSpeedCube.h"
+#include <Components/SphereComponent.h>
 #include "ATimeCharacter.generated.h"
+
 
 
 UCLASS()
@@ -18,17 +20,29 @@ class CMP302_COURSEWORK_API ATimeCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ATimeCharacter();
-
+	UPROPERTY(EditAnywhere)
+		float mDefaultStartingTimeJuice;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 		void RewindTime();
+	void PrintToScreen(FString text);
+	float _mCurrentTimeJuice;
+	FScriptDelegate del;
+	USphereComponent* mTimeRadius;
+	UFUNCTION()
+		void OnTimeRadiusBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	UFUNCTION(BlueprintCallable)
+		void AddTimeJuice(float amountToAdd);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TArray<ATimeAffected*> mTimeObjectsInRange;
 };

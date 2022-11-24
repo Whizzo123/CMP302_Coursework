@@ -35,7 +35,7 @@ void ATimeSpeedCube::Tick(float DeltaTime)
 	}
 }
 
-void ATimeSpeedCube::TimeEffect()
+void ATimeSpeedCube::OnTimeEffect()
 {
 	if (mUnderTimeEffect)
 	{

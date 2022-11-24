@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "TimeAffected.h"
 #include "ATimeCube.generated.h"
 
 
 UCLASS()
-class CMP302_COURSEWORK_API ATimeCube : public AActor
+class CMP302_COURSEWORK_API ATimeCube : public ATimeAffected
 {
 	GENERATED_BODY()
 	
@@ -39,5 +39,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void Rewind();
+	virtual void OnTimeEffect() override;
 };

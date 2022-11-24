@@ -65,7 +65,7 @@ void ATimeCube::Tick(float DeltaTime)
 	}
 }
 
-void ATimeCube::Rewind()
+void ATimeCube::OnTimeEffect()
 {
 	// Determine how far back to rewind
 	mRewindIndex = mRecordedPositions.Num() - 1;

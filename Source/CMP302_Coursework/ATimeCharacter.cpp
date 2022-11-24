@@ -9,6 +9,10 @@ ATimeCharacter::ATimeCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	mTimeRadius = CreateDefaultSubobject<USphereComponent>(TEXT("My Time Radius"));
+	mTimeRadius->SetSphereRadius(470.0f);
+	del.BindUFunction(this, FName("OnTimeRadiusBeginOverlap"));
+	mTimeRadius->OnComponentBeginOverlap.Add(del);
 }
 
 // Called when the game starts or when spawned
@@ -22,8 +26,8 @@ void ATimeCharacter::BeginPlay()
 void ATimeCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	
+	FString text = FString::SanitizeFloat(_mCurrentTimeJuice);
+	//PrintToScreen(text);
 }
 
 // Called to bind functionality to input
@@ -36,21 +40,33 @@ void ATimeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ATimeCharacter::RewindTime()
 {
-	GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Green, TEXT("Hello this is the rewind time!!"));
-	TArray<AActor*> timeCubes;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeCube::StaticClass(), timeCubes);
-	for (AActor* a : timeCubes)
+	if (_mCurrentTimeJuice > 0.0f)
 	{
-		GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Green, TEXT("Rewinding for cube: "));
-		ATimeCube* timeCube = Cast<ATimeCube>(a);
-		timeCube->Rewind();
+		GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Green, TEXT("Hello this is the rewind time!!"));
+		if(mTimeObjectsInRange.Num() > 0)
+			_mCurrentTimeJuice -= 2.0f;
+		for (ATimeAffected* timeObject : mTimeObjectsInRange)
+		{
+			timeObject->OnTimeEffect();
+		}
+		
 	}
-	TArray<AActor*> timeSpeedCubes;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATimeSpeedCube::StaticClass(), timeSpeedCubes);
-	for (AActor* a : timeSpeedCubes)
-	{
-		ATimeSpeedCube* timeSpeedCube = Cast<ATimeSpeedCube>(a);
-		timeSpeedCube->TimeEffect();
-	}
+	else
+		PrintToScreen("Out of Juice");
 }
 
+void ATimeCharacter::AddTimeJuice(float amountToAdd)
+{
+	_mCurrentTimeJuice += amountToAdd;
+}
+
+void ATimeCharacter::OnTimeRadiusBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
+}
+
+void ATimeCharacter::PrintToScreen(FString text)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
+}
