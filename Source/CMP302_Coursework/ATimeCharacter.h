@@ -29,12 +29,16 @@ protected:
 		void RewindTime();
 	void PrintToScreen(FString text);
 	float _mCurrentTimeJuice;
-	FScriptDelegate del;
+	UPROPERTY(BlueprintReadWrite)
 	USphereComponent* mTimeRadius;
+	UPROPERTY(EditAnywhere)
+		UCapsuleComponent* mCapsule;
 	UFUNCTION()
-		void OnTimeRadiusBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnTimeRadiusBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION(BlueprintCallable)
+		void OnTimeRadiusExitOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
