@@ -46,6 +46,7 @@ void ATimeSpeedCube::OnTimeEffectStopped()
 void ATimeSpeedCube::OnTimeEffectReversed()
 {
 	mDirection *= -1;
+	mSpeed = mDefaultSpeed - mSpeedChange;
 }
 void ATimeSpeedCube::OnTimeEffectOver()
 {

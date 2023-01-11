@@ -25,7 +25,7 @@ protected:
 	TimeStages _mCurrentState;
 	bool _mCurrentlyUnderTimeEffect;
 	float _mTimeLeftUnderEffect;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 		float _mTimePerEffect;
 private:
 	UStaticMeshComponent* mStaticMesh;
@@ -40,7 +40,7 @@ public:
 	virtual void OnTimeEffectStopped();
 	virtual void OnTimeEffectReversed();
 	virtual void OnTimeEffectOver();
-
+	void PrintToScreen(FString text);
 	UFUNCTION(BlueprintCallable)
 		void HighlightObject();
 	UFUNCTION(BlueprintCallable)
