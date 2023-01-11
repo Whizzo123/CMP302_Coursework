@@ -5,9 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "ATimeCube.h"
 #include "TimeSpeedCube.h"
 #include <Components/SphereComponent.h>
+#include "Components/ProgressBar.h"
+#include "Camera/CameraComponent.h"
 #include "ATimeCharacter.generated.h"
 
 
@@ -23,21 +26,27 @@ public:
 	UPROPERTY(EditAnywhere)
 		float mDefaultStartingTimeJuice;
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 	UFUNCTION(BlueprintCallable)
 		void RewindTime();
-	void PrintToScreen(FString text);
-	float _mCurrentTimeJuice;
-	UPROPERTY(BlueprintReadWrite)
-	USphereComponent* mTimeRadius;
+	UPROPERTY(EditAnywhere)
+		float maxTimeJuice;
 	UPROPERTY(EditAnywhere)
 		UCapsuleComponent* mCapsule;
-	UFUNCTION()
-		void OnTimeRadiusBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION(BlueprintCallable)
-		void OnTimeRadiusExitOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UPROPERTY(BlueprintReadWrite)
+		UProgressBar* progressBar;
+	UPROPERTY(BlueprintReadWrite)
+		bool mHoldingTimeButton;
+
+	float _mCurrentTimeJuice;
+	ATimeAffected* _mCurrentTargetedTimeObject;
+	UCameraComponent* _mFollowCamera;
 	
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	void PrintToScreen(FString text);
+	void TimeLineTrace();
+	void DisableTimeObjectHighlight();
 
 public:	
 	// Called every frame
@@ -47,6 +56,4 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UFUNCTION(BlueprintCallable)
 		void AddTimeJuice(float amountToAdd);
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-		TArray<ATimeAffected*> mTimeObjectsInRange;
 };

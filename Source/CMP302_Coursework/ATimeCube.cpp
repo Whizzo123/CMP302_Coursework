@@ -20,9 +20,8 @@ void ATimeCube::BeginPlay()
 {
 	Super::BeginPlay();
 	mLastPosition = GetActorLocation();
-	if (!mStaticMesh)
-		mStaticMesh = FindComponentByClass<UStaticMeshComponent>();
-	mStaticMesh->SetSimulatePhysics(true);
+	SetStaticMesh(FindComponentByClass<UStaticMeshComponent>());
+	GetStaticMesh()->SetSimulatePhysics(true);
 }
 
 // Called every frame
@@ -35,16 +34,16 @@ void ATimeCube::Tick(float DeltaTime)
 		if (mRewindIndex < 0)
 		{
 			mRewinding = false;
-			mStaticMesh->SetSimulatePhysics(true);
+			GetStaticMesh()->SetSimulatePhysics(true);
 			mRecordedPositions.Empty();
 		}
 		else
 		{
 			FVector rewindPos = mRecordedPositions[mRewindIndex];
-			FVector currentLocation = mStaticMesh->GetComponentLocation();
+			FVector currentLocation = GetStaticMesh()->GetComponentLocation();
 			FVector newLocation = FMath::Lerp(currentLocation, rewindPos, mRewindSpeed * DeltaTime);
-			mStaticMesh->SetWorldLocation(newLocation, false, nullptr, ETeleportType::TeleportPhysics);
-			if(FVector::Dist(mStaticMesh->GetComponentLocation(), rewindPos) < 5.0f)
+			GetStaticMesh()->SetWorldLocation(newLocation, false, nullptr, ETeleportType::TeleportPhysics);
+			if(FVector::Dist(GetStaticMesh()->GetComponentLocation(), rewindPos) < 5.0f)
 				mRewindIndex = mRewindIndex - 1;
 		}
 	}
@@ -52,10 +51,10 @@ void ATimeCube::Tick(float DeltaTime)
 	{
 		// Delay
 		Delay(3.0f, DeltaTime);
-		if (mStaticMesh->GetPhysicsLinearVelocity().Length() > mVelocityThreshold)
+		if (GetStaticMesh()->GetPhysicsLinearVelocity().Length() > mVelocityThreshold)
 		{
 			mMoving = true;
-			mRecordedPositions.Add(mStaticMesh->GetComponentLocation());
+			mRecordedPositions.Add(GetStaticMesh()->GetComponentLocation());
 		}
 		else
 		{
@@ -70,7 +69,7 @@ void ATimeCube::OnTimeEffect()
 	// Determine how far back to rewind
 	mRewindIndex = mRecordedPositions.Num() - 1;
 	// Disable physics
-	mStaticMesh->SetSimulatePhysics(false);
+	GetStaticMesh()->SetSimulatePhysics(false);
 	mRewinding = true;
 }
 

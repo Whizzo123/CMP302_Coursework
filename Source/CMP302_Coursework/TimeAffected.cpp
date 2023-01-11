@@ -15,7 +15,6 @@ ATimeAffected::ATimeAffected()
 void ATimeAffected::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -28,4 +27,25 @@ void ATimeAffected::Tick(float DeltaTime)
 void ATimeAffected::OnTimeEffect()
 {
 
+}
+
+void ATimeAffected::HighlightObject()
+{
+	mStaticMesh->SetMaterial(0, mHighlightMaterial);
+}
+
+void ATimeAffected::UnHighlightObject()
+{
+	mStaticMesh->SetMaterial(0, mDefaultMaterial);
+}
+
+void ATimeAffected::SetStaticMesh(UStaticMeshComponent* mesh)
+{
+	mStaticMesh = mesh;
+	mDefaultMaterial = mStaticMesh->GetMaterial(0)->GetMaterial();
+}
+
+UStaticMeshComponent* ATimeAffected::GetStaticMesh()
+{
+	return mStaticMesh;
 }

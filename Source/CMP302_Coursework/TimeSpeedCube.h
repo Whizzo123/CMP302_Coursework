@@ -28,7 +28,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool mSpeedUp;
 	bool mUnderTimeEffect;
-	UStaticMeshComponent* mStaticMesh;
 	virtual void OnTimeEffect() override;
 	void PrintToScreen(FString text);
 protected:

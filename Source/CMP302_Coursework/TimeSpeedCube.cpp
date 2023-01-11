@@ -15,8 +15,8 @@ ATimeSpeedCube::ATimeSpeedCube()
 void ATimeSpeedCube::BeginPlay()
 {
 	Super::BeginPlay();
-	mStaticMesh = FindComponentByClass<UStaticMeshComponent>();
-	mLastPosition = mStaticMesh->GetComponentLocation();
+	SetStaticMesh(FindComponentByClass<UStaticMeshComponent>());
+	mLastPosition = GetStaticMesh()->GetComponentLocation();
 	mSpeed = mDefaultSpeed;
 }
 
@@ -25,13 +25,13 @@ void ATimeSpeedCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FVector vel = mDirection * (mSpeed * DeltaTime);
-	mStaticMesh->SetPhysicsLinearVelocity(vel);
-	mDistance = FVector::Distance(mStaticMesh->GetComponentLocation(), mLastPosition);
+	GetStaticMesh()->SetPhysicsLinearVelocity(vel);
+	mDistance = FVector::Distance(GetStaticMesh()->GetComponentLocation(), mLastPosition);
 	if (mDistance > mMaxDistance)
 	{
 		mDirection = mDirection * -1;
 		mDistance = 0.0f;
-		mLastPosition = mStaticMesh->GetComponentLocation();
+		mLastPosition = GetStaticMesh()->GetComponentLocation();
 	}
 }
 

@@ -24,7 +24,6 @@ protected:
 	int32 mRewindIndex;
 	UPROPERTY(EditAnywhere)
 		int32 mStepsToRewind;
-	UStaticMeshComponent* mStaticMesh;
 	bool mRewinding;
 	bool mMoving;
 	FVector mLastPosition;
