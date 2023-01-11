@@ -64,13 +64,25 @@ void ATimeCube::Tick(float DeltaTime)
 	}
 }
 
-void ATimeCube::OnTimeEffect()
+void ATimeCube::OnTimeEffectSlowed()
+{
+	
+}
+void ATimeCube::OnTimeEffectStopped()
+{
+	
+}
+void ATimeCube::OnTimeEffectReversed()
 {
 	// Determine how far back to rewind
 	mRewindIndex = mRecordedPositions.Num() - 1;
 	// Disable physics
 	GetStaticMesh()->SetSimulatePhysics(false);
 	mRewinding = true;
+}
+void ATimeCube::OnTimeEffectOver()
+{
+	_mCurrentState = SLOW;
 }
 
 void ATimeCube::Delay(float duration, float deltaTime)

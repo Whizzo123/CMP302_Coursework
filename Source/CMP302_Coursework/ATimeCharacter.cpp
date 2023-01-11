@@ -69,11 +69,13 @@ void ATimeCharacter::TimeLineTrace()
 	this->GetWorld()->LineTraceSingleByChannel(*outHit, startVec, endVec, ECollisionChannel::ECC_Visibility);
 	if (outHit != nullptr && outHit->GetActor() != nullptr)
 	{
-		ATimeAffected* timeObject = static_cast<ATimeAffected*>(outHit->GetActor());
+		ATimeAffected* timeObject = Cast<ATimeAffected>(outHit->GetActor());
 		if (timeObject != nullptr)
 		{
-			if(timeObject != _mCurrentTargetedTimeObject)
+			if (timeObject != _mCurrentTargetedTimeObject)
+			{
 				DisableTimeObjectHighlight();
+			}
 			timeObject->HighlightObject();
 			_mCurrentTargetedTimeObject = timeObject;
 		}
@@ -86,9 +88,6 @@ void ATimeCharacter::TimeLineTrace()
 
 void ATimeCharacter::DisableTimeObjectHighlight()
 {
-	if (_mCurrentTargetedTimeObject != nullptr)
-	{
+	if(_mCurrentTargetedTimeObject != nullptr)
 		_mCurrentTargetedTimeObject->UnHighlightObject();
-		_mCurrentTargetedTimeObject = nullptr;
-	}
 }

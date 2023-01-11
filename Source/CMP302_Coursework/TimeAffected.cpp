@@ -21,17 +21,54 @@ void ATimeAffected::BeginPlay()
 void ATimeAffected::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (_mCurrentlyUnderTimeEffect)
+	{
+		if (_mTimeLeftUnderEffect <= 0)
+		{
+			_mCurrentlyUnderTimeEffect = false;
+			OnTimeEffectOver();
+		}
+		_mTimeLeftUnderEffect -= DeltaTime;
+	}
 }
 
 void ATimeAffected::OnTimeEffect()
 {
-
+	if (_mCurrentState != REVERSE)
+	{
+		switch (_mCurrentState)
+		{
+		case SLOW:
+			OnTimeEffectSlowed();
+			_mCurrentlyUnderTimeEffect = true;
+			_mTimeLeftUnderEffect = _mTimePerEffect;
+			_mCurrentState = STOP;
+			break;
+		case STOP:
+			OnTimeEffectStopped();
+			_mTimeLeftUnderEffect = _mTimePerEffect;
+			_mCurrentState = REVERSE;
+			break;
+		case REVERSE:
+			OnTimeEffectReversed();
+			_mTimeLeftUnderEffect = _mTimePerEffect;
+			break;
+		}
+	}
 }
+
+void ATimeAffected::OnTimeEffectSlowed() {}
+
+void ATimeAffected::OnTimeEffectStopped() {}
+
+void ATimeAffected::OnTimeEffectReversed() {}
+
+void ATimeAffected::OnTimeEffectOver() {}
 
 void ATimeAffected::HighlightObject()
 {
-	mStaticMesh->SetMaterial(0, mHighlightMaterial);
+	if(mStaticMesh != nullptr)
+		mStaticMesh->SetMaterial(0, mHighlightMaterial);
 }
 
 void ATimeAffected::UnHighlightObject()

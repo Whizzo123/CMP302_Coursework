@@ -28,7 +28,10 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool mSpeedUp;
 	bool mUnderTimeEffect;
-	virtual void OnTimeEffect() override;
+	virtual void OnTimeEffectSlowed() override;
+	virtual void OnTimeEffectStopped() override;
+	virtual void OnTimeEffectReversed() override;
+	virtual void OnTimeEffectOver() override;
 	void PrintToScreen(FString text);
 protected:
 	// Called when the game starts or when spawned

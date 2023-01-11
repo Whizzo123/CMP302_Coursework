@@ -31,6 +31,10 @@ protected:
 		float mVelocityThreshold;
 	UPROPERTY(EditAnywhere)
 		float mRewindSpeed;
+	virtual void OnTimeEffectSlowed() override;
+	virtual void OnTimeEffectStopped() override;
+	virtual void OnTimeEffectReversed() override;
+	virtual void OnTimeEffectOver() override;
 
 protected:
 	void Delay(float duration, float deltaTime);
@@ -38,5 +42,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void OnTimeEffect() override;
 };

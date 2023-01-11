@@ -35,21 +35,26 @@ void ATimeSpeedCube::Tick(float DeltaTime)
 	}
 }
 
-void ATimeSpeedCube::OnTimeEffect()
+void ATimeSpeedCube::OnTimeEffectSlowed()
 {
-	if (mUnderTimeEffect)
+	mSpeed -= mSpeedChange;
+}
+void ATimeSpeedCube::OnTimeEffectStopped()
+{
+	mSpeed = 0;
+}
+void ATimeSpeedCube::OnTimeEffectReversed()
+{
+	mDirection *= -1;
+}
+void ATimeSpeedCube::OnTimeEffectOver()
+{
+	mSpeed = mDefaultSpeed;
+	if (_mCurrentState == REVERSE)
 	{
-		mSpeed = mDefaultSpeed;
-		mUnderTimeEffect = false;
+		mDirection *= -1;
 	}
-	else
-	{
-		if (mSpeedUp)
-			mSpeed += mSpeedChange;
-		else
-			mSpeed -= mSpeedChange;
-		mUnderTimeEffect = true;
-	}
+	_mCurrentState = SLOW;
 }
 
 void ATimeSpeedCube::PrintToScreen(FString text)

@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "TimeAffected.generated.h"
 
+enum TimeStages {SLOW, STOP, REVERSE};
+
 UCLASS()
 class CMP302_COURSEWORK_API ATimeAffected : public AActor
 {
@@ -20,6 +22,11 @@ protected:
 	virtual void BeginPlay() override;
 	void SetStaticMesh(UStaticMeshComponent* mesh);
 	UStaticMeshComponent* GetStaticMesh();
+	TimeStages _mCurrentState;
+	bool _mCurrentlyUnderTimeEffect;
+	float _mTimeLeftUnderEffect;
+	UPROPERTY(BlueprintReadWrite)
+		float _mTimePerEffect;
 private:
 	UStaticMeshComponent* mStaticMesh;
 	UMaterial* mDefaultMaterial;
@@ -27,7 +34,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void OnTimeEffect();
+	void OnTimeEffect();
+
+	virtual void OnTimeEffectSlowed();
+	virtual void OnTimeEffectStopped();
+	virtual void OnTimeEffectReversed();
+	virtual void OnTimeEffectOver();
 
 	UFUNCTION(BlueprintCallable)
 		void HighlightObject();
