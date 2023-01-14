@@ -122,13 +122,10 @@ void ATimeCharacter::CancelRewind()
 {
 	if (_mCurrentTargetedTimeObject != nullptr)
 	{
-		PrintToScreen("Cancel Rewind current state: " + _mCurrentTargetedTimeObject->GetCurrentTimeState());
-		if (_mCurrentTargetedTimeObject->GetCurrentTimeState() == REVERSE)
-		{
-			PrintToScreen("Calling Cancel Rewind");
-			// Call OnTimeReverseCancelled
-			_mCurrentTargetedTimeObject->OnTimeReverseCancelled();
-		}
+		ATimeCube* timeCube = Cast<ATimeCube>(_mCurrentTargetedTimeObject);
+		if (timeCube != nullptr)
+			timeCube->ClearRewind();
+
 	}
 }
 

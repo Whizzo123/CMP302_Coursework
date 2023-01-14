@@ -39,6 +39,7 @@ protected:
 	virtual void OnTimeEffectReversed() override;
 	virtual void OnTimeReverseCancelled() override;
 	virtual void OnTimeEffectOver() override;
+	
 protected:
 	void Delay(float duration, float deltaTime);
 	void PrintToScreen(FString message);
@@ -47,4 +48,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void ClearRewind();
 };

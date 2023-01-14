@@ -91,6 +91,11 @@ void ATimeCube::OnTimeEffectOver()
 	_mCurrentState = SLOW;
 }
 
+void ATimeCube::ClearRewind()
+{
+	mRecordedPositions.Empty();
+}
+
 void ATimeCube::Delay(float duration, float deltaTime)
 {
 	float currentDuration = 0.0f;
