@@ -26,19 +26,24 @@ protected:
 		int32 mStepsToRewind;
 	bool mRewinding;
 	bool mMoving;
-	FVector mLastPosition;
 	UPROPERTY(EditAnywhere)
 		float mVelocityThreshold;
 	UPROPERTY(EditAnywhere)
 		float mRewindSpeed;
+	UPROPERTY(EditAnywhere)
+		float mRecordWaitTime;
+	UPROPERTY(EditAnywhere)
+		float mThresholdRecordDistance;
 	virtual void OnTimeEffectSlowed() override;
 	virtual void OnTimeEffectStopped() override;
 	virtual void OnTimeEffectReversed() override;
+	virtual void OnTimeReverseCancelled() override;
 	virtual void OnTimeEffectOver() override;
-
 protected:
 	void Delay(float duration, float deltaTime);
 	void PrintToScreen(FString message);
+
+	FVector _mLastRecordedPosition;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

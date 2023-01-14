@@ -39,13 +39,14 @@ public:
 	virtual void OnTimeEffectSlowed();
 	virtual void OnTimeEffectStopped();
 	virtual void OnTimeEffectReversed();
+	virtual void OnTimeReverseCancelled();
 	virtual void OnTimeEffectOver();
 	void PrintToScreen(FString text);
 	UFUNCTION(BlueprintCallable)
 		void HighlightObject();
 	UFUNCTION(BlueprintCallable)
 		void UnHighlightObject();
-
 	UPROPERTY(EditAnywhere)
 		UMaterial* mHighlightMaterial;
+	TimeStages GetCurrentTimeState();
 };

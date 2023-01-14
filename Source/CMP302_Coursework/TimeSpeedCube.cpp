@@ -18,6 +18,8 @@ void ATimeSpeedCube::BeginPlay()
 	SetStaticMesh(FindComponentByClass<UStaticMeshComponent>());
 	mLastPosition = GetStaticMesh()->GetComponentLocation();
 	mSpeed = mDefaultSpeed;
+	GetStaticMesh()->SetNotifyRigidBodyCollision(true);
+	this->OnActorHit.AddDynamic(this, &ATimeSpeedCube::OnHitObject);
 }
 
 // Called every frame
@@ -58,8 +60,16 @@ void ATimeSpeedCube::OnTimeEffectOver()
 	_mCurrentState = SLOW;
 }
 
+
+
 void ATimeSpeedCube::PrintToScreen(FString text)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
 }
 
+void ATimeSpeedCube::OnHitObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	mDirection = mDirection * -1;
+	mDistance = 0.0f;
+	mLastPosition = GetStaticMesh()->GetComponentLocation();
+}

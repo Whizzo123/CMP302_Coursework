@@ -52,6 +52,7 @@ void ATimeAffected::OnTimeEffect()
 	case REVERSE:
 		OnTimeEffectReversed();
 		_mTimeLeftUnderEffect = _mTimePerEffect;
+		_mCurrentState = SLOW;
 		PrintToScreen("REVERSE");
 		break;
 	}
@@ -62,6 +63,8 @@ void ATimeAffected::OnTimeEffectSlowed() {}
 void ATimeAffected::OnTimeEffectStopped() {}
 
 void ATimeAffected::OnTimeEffectReversed() {}
+
+void ATimeAffected::OnTimeReverseCancelled() {}
 
 void ATimeAffected::OnTimeEffectOver() {}
 
@@ -90,4 +93,9 @@ UStaticMeshComponent* ATimeAffected::GetStaticMesh()
 void ATimeAffected::PrintToScreen(FString text)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
+}
+
+TimeStages ATimeAffected::GetCurrentTimeState()
+{
+	return _mCurrentState;
 }

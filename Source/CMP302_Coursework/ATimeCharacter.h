@@ -36,18 +36,38 @@ protected:
 		UProgressBar* progressBar;
 	UPROPERTY(BlueprintReadWrite)
 		bool mHoldingTimeButton;
-
+	UPROPERTY(EditAnywhere)
+		float mTimeReach;
+	UPROPERTY(BlueprintReadWrite)
+		UCameraComponent* mThirdPersonCam;
+	UPROPERTY(BlueprintReadWrite)
+		UCameraComponent* mFirstPersonCam;
 	float _mCurrentTimeJuice;
 	ATimeAffected* _mCurrentTargetedTimeObject;
 	UCameraComponent* _mFollowCamera;
-	
-
+	UCapsuleComponent* _mCapsule;
+	UInputComponent* _mInputComp;
+	FVector _mSpawnPos;
+	bool _mInThirdPersonMode;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void PrintToScreen(FString text);
 	void TimeLineTrace();
 	void DisableTimeObjectHighlight();
-
+	UFUNCTION(BlueprintCallable)
+		void SwitchToFirstPerson();
+	UFUNCTION(BlueprintCallable)
+		void SwitchToThirdPerson();
+	UFUNCTION()
+		void SetHoldingTimeButton();
+	UFUNCTION()
+		void SetReleaseTimeButton();
+	UFUNCTION()
+		void OnHitPlayer(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION(BlueprintCallable)
+		void CancelRewind();
+	UFUNCTION()
+		void SwitchCameras();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

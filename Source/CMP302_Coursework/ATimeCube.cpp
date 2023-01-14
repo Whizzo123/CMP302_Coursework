@@ -10,8 +10,6 @@ ATimeCube::ATimeCube()
 	PrimaryActorTick.bCanEverTick = true;
 	mVelocityThreshold = 0.05f;
 	mRewinding = false;
-	mStepsToRewind = 20;
-	mRewindSpeed = 10.0f;
 	mRewindIndex = -1;
 }
 
@@ -19,9 +17,10 @@ ATimeCube::ATimeCube()
 void ATimeCube::BeginPlay()
 {
 	Super::BeginPlay();
-	mLastPosition = GetActorLocation();
 	SetStaticMesh(FindComponentByClass<UStaticMeshComponent>());
 	GetStaticMesh()->SetSimulatePhysics(true);
+	_mLastRecordedPosition = GetStaticMesh()->GetComponentLocation();
+	mRecordedPositions.Add(_mLastRecordedPosition);
 }
 
 // Called every frame
@@ -36,41 +35,39 @@ void ATimeCube::Tick(float DeltaTime)
 			mRewinding = false;
 			GetStaticMesh()->SetSimulatePhysics(true);
 			mRecordedPositions.Empty();
+			OnTimeEffectOver();
 		}
 		else
 		{
 			FVector rewindPos = mRecordedPositions[mRewindIndex];
 			FVector currentLocation = GetStaticMesh()->GetComponentLocation();
 			FVector newLocation = FMath::Lerp(currentLocation, rewindPos, mRewindSpeed * DeltaTime);
-			GetStaticMesh()->SetWorldLocation(newLocation, false, nullptr, ETeleportType::TeleportPhysics);
-			if(FVector::Dist(GetStaticMesh()->GetComponentLocation(), rewindPos) < 5.0f)
+			GetStaticMesh()->SetWorldLocation(newLocation);
+			if (FVector::Dist(GetStaticMesh()->GetComponentLocation(), rewindPos) < 0.1f)
+			{
+				GetStaticMesh()->SetWorldLocation(rewindPos);
 				mRewindIndex = mRewindIndex - 1;
+			}
 		}
 	}
 	else
 	{
-		// Delay
-		Delay(3.0f, DeltaTime);
-		if (GetStaticMesh()->GetPhysicsLinearVelocity().Length() > mVelocityThreshold)
+		if (FVector::Dist(GetStaticMesh()->GetComponentLocation(), _mLastRecordedPosition) > mThresholdRecordDistance)
 		{
-			mMoving = true;
 			mRecordedPositions.Add(GetStaticMesh()->GetComponentLocation());
+			_mLastRecordedPosition = GetStaticMesh()->GetComponentLocation();
 		}
-		else
-		{
-			mMoving = false;
-		}
-		mLastPosition = GetActorLocation();
+		
 	}
 }
 
 void ATimeCube::OnTimeEffectSlowed()
 {
-	
+	PrintToScreen("Calling on time effect slowed");
 }
 void ATimeCube::OnTimeEffectStopped()
 {
-	
+	PrintToScreen("Calling on time effect stopped");
 }
 void ATimeCube::OnTimeEffectReversed()
 {
@@ -80,6 +77,15 @@ void ATimeCube::OnTimeEffectReversed()
 	GetStaticMesh()->SetSimulatePhysics(false);
 	mRewinding = true;
 }
+
+void ATimeCube::OnTimeReverseCancelled()
+{
+	PrintToScreen("On Time Reverse Cancelled");
+	mRewinding = false;
+	GetStaticMesh()->SetSimulatePhysics(true);
+	mRecordedPositions.Empty();
+}
+
 void ATimeCube::OnTimeEffectOver()
 {
 	_mCurrentState = SLOW;

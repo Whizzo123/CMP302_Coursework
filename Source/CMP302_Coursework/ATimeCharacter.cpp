@@ -16,6 +16,20 @@ void ATimeCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	_mFollowCamera = this->FindComponentByClass<UCameraComponent>();
+	AddTimeJuice(mDefaultStartingTimeJuice);
+	this->OnActorHit.AddDynamic(this, &ATimeCharacter::OnHitPlayer);
+	_mSpawnPos = GetActorLocation();
+	_mInThirdPersonMode = true;
+}
+
+void ATimeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAction("TimeAction", IE_Pressed, this, &ATimeCharacter::RewindTime);
+	PlayerInputComponent->BindAction("TimeTarget", IE_Pressed, this, &ATimeCharacter::SetHoldingTimeButton);
+	PlayerInputComponent->BindAction("TimeTarget", IE_Released, this, &ATimeCharacter::SetReleaseTimeButton);
+	PlayerInputComponent->BindAction("TimeCancel", IE_Pressed, this, &ATimeCharacter::CancelRewind);
+	PlayerInputComponent->BindAction("SwitchCamera", IE_Pressed, this, &ATimeCharacter::SwitchCameras);
 }
 
 // Called every frame
@@ -26,13 +40,10 @@ void ATimeCharacter::Tick(float DeltaTime)
 		TimeLineTrace();
 	else
 		DisableTimeObjectHighlight();
+	if (_mCurrentTimeJuice < 2.0f)
+		AddTimeJuice(6.0f);
 }
 
-// Called to bind functionality to input
-void ATimeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
 
 void ATimeCharacter::RewindTime()
 {
@@ -60,9 +71,20 @@ void ATimeCharacter::PrintToScreen(FString text)
 
 void ATimeCharacter::TimeLineTrace()
 {
-	FVector startVec = _mFollowCamera->GetComponentLocation();
-	FVector endVec = UKismetMathLibrary::GetForwardVector(_mFollowCamera->GetComponentRotation());
-	endVec *= 1000.0f;
+	FVector startVec;
+	FVector endVec;
+	if (_mInThirdPersonMode)
+	{
+		startVec = mThirdPersonCam->GetComponentLocation();
+		endVec = UKismetMathLibrary::GetForwardVector(mThirdPersonCam->GetComponentRotation());
+	}
+	else
+	{
+		startVec = mFirstPersonCam->GetComponentLocation();
+		endVec = UKismetMathLibrary::GetForwardVector(mFirstPersonCam->GetComponentRotation());
+	}
+	
+	endVec *= mTimeReach;
 	endVec += startVec;
 
 	FHitResult* outHit = new FHitResult();
@@ -86,8 +108,71 @@ void ATimeCharacter::TimeLineTrace()
 		DisableTimeObjectHighlight();
 }
 
+void ATimeCharacter::OnHitPlayer(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	ATimeSpeedCube* hitSpeedCube = Cast<ATimeSpeedCube>(OtherActor);
+	if (hitSpeedCube != nullptr)
+	{
+		PrintToScreen("Hit");
+		SetActorLocation(_mSpawnPos);
+	}
+}
+
+void ATimeCharacter::CancelRewind()
+{
+	if (_mCurrentTargetedTimeObject != nullptr)
+	{
+		PrintToScreen("Cancel Rewind current state: " + _mCurrentTargetedTimeObject->GetCurrentTimeState());
+		if (_mCurrentTargetedTimeObject->GetCurrentTimeState() == REVERSE)
+		{
+			PrintToScreen("Calling Cancel Rewind");
+			// Call OnTimeReverseCancelled
+			_mCurrentTargetedTimeObject->OnTimeReverseCancelled();
+		}
+	}
+}
+
 void ATimeCharacter::DisableTimeObjectHighlight()
 {
-	if(_mCurrentTargetedTimeObject != nullptr)
+	if (_mCurrentTargetedTimeObject != nullptr)
+	{
 		_mCurrentTargetedTimeObject->UnHighlightObject();
+		_mCurrentTargetedTimeObject = nullptr;
+	}
+}
+
+void ATimeCharacter::SetHoldingTimeButton()
+{
+	mHoldingTimeButton = true;
+}
+
+void ATimeCharacter::SetReleaseTimeButton()
+{
+	mHoldingTimeButton = false;
+}
+
+void ATimeCharacter::SwitchToFirstPerson()
+{
+	mThirdPersonCam->SetActive(false);
+	mFirstPersonCam->SetActive(true);
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationPitch = true;
+	_mInThirdPersonMode = false;
+}
+
+void ATimeCharacter::SwitchToThirdPerson()
+{
+	mFirstPersonCam->SetActive(false);
+	mThirdPersonCam->SetActive(true);
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = false;
+	_mInThirdPersonMode = true;
+}
+
+void ATimeCharacter::SwitchCameras()
+{
+	if (_mInThirdPersonMode)
+		SwitchToFirstPerson();
+	else
+		SwitchToThirdPerson();
 }

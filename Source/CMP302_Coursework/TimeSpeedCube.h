@@ -33,6 +33,8 @@ public:
 	virtual void OnTimeEffectReversed() override;
 	virtual void OnTimeEffectOver() override;
 	void PrintToScreen(FString text);
+	UFUNCTION()
+		void OnHitObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
