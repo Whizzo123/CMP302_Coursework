@@ -10,6 +10,7 @@
 #include "TimeSpeedCube.h"
 #include <Components/SphereComponent.h>
 #include "Components/ProgressBar.h"
+#include "Components/Image.h"
 #include "Camera/CameraComponent.h"
 #include "ATimeCharacter.generated.h"
 
@@ -33,21 +34,51 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UCapsuleComponent* mCapsule;
 	UPROPERTY(BlueprintReadWrite)
-		UProgressBar* progressBar;
+		UProgressBar* timeJuiceBar;
+	UPROPERTY(BlueprintReadWrite)
+		UImage* mTimeEffectImage;
 	UPROPERTY(BlueprintReadWrite)
 		bool mHoldingTimeButton;
-
+	UPROPERTY(EditAnywhere)
+		float mTimeReach;
+	UPROPERTY(BlueprintReadWrite)
+		UCameraComponent* mThirdPersonCam;
+	UPROPERTY(BlueprintReadWrite)
+		UCameraComponent* mFirstPersonCam;
+	UPROPERTY(EditAnywhere)
+		UTexture2D* slowTimeEffectImage;
+	UPROPERTY(EditAnywhere)
+		UTexture2D* stopTimeEffectImage;
+	UPROPERTY(EditAnywhere)
+		UTexture2D* reverseTimeEffectImage;
+	UPROPERTY(EditAnywhere)
+		UTexture2D* normalTimeEffectImage;
 	float _mCurrentTimeJuice;
 	ATimeAffected* _mCurrentTargetedTimeObject;
 	UCameraComponent* _mFollowCamera;
-	
-
+	UCapsuleComponent* _mCapsule;
+	UInputComponent* _mInputComp;
+	FVector _mSpawnPos;
+	bool _mInThirdPersonMode;
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void PrintToScreen(FString text);
 	void TimeLineTrace();
 	void DisableTimeObjectHighlight();
-
+	void SetTimeEffectImageUI();
+	UFUNCTION(BlueprintCallable)
+		void SwitchToFirstPerson();
+	UFUNCTION(BlueprintCallable)
+		void SwitchToThirdPerson();
+	UFUNCTION()
+		void SetHoldingTimeButton();
+	UFUNCTION()
+		void SetReleaseTimeButton();
+	UFUNCTION()
+		void OnHitPlayer(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION(BlueprintCallable)
+		void CancelRewind();
+	UFUNCTION()
+		void SwitchCameras();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

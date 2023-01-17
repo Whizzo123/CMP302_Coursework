@@ -16,8 +16,9 @@ void ATimeSpeedCube::BeginPlay()
 {
 	Super::BeginPlay();
 	SetStaticMesh(FindComponentByClass<UStaticMeshComponent>());
-	mLastPosition = GetStaticMesh()->GetComponentLocation();
 	mSpeed = mDefaultSpeed;
+	GetStaticMesh()->SetNotifyRigidBodyCollision(true);
+	this->OnActorHit.AddDynamic(this, &ATimeSpeedCube::OnHitObject);
 }
 
 // Called every frame
@@ -26,34 +27,35 @@ void ATimeSpeedCube::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector vel = mDirection * (mSpeed * DeltaTime);
 	GetStaticMesh()->SetPhysicsLinearVelocity(vel);
-	mDistance = FVector::Distance(GetStaticMesh()->GetComponentLocation(), mLastPosition);
-	if (mDistance > mMaxDistance)
-	{
-		mDirection = mDirection * -1;
-		mDistance = 0.0f;
-		mLastPosition = GetStaticMesh()->GetComponentLocation();
-	}
 }
 
-void ATimeSpeedCube::OnTimeEffect()
+void ATimeSpeedCube::OnTimeEffectSlowed()
 {
-	if (mUnderTimeEffect)
-	{
-		mSpeed = mDefaultSpeed;
-		mUnderTimeEffect = false;
-	}
-	else
-	{
-		if (mSpeedUp)
-			mSpeed += mSpeedChange;
-		else
-			mSpeed -= mSpeedChange;
-		mUnderTimeEffect = true;
-	}
+	mSpeed -= mSpeedChange;
 }
-
-void ATimeSpeedCube::PrintToScreen(FString text)
+void ATimeSpeedCube::OnTimeEffectStopped()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
+	mSpeed = 0;
+}
+void ATimeSpeedCube::OnTimeEffectReversed()
+{
+	mDirection *= -1;
+	mSpeed = mDefaultSpeed - mSpeedChange;
+}
+void ATimeSpeedCube::OnTimeEffectOver()
+{
+	mSpeed = mDefaultSpeed;
+	if (_mCurrentState == REVERSE)
+	{
+		mDirection *= -1;
+	}
 }
 
+
+
+
+
+void ATimeSpeedCube::OnHitObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	mDirection = mDirection * -1;
+}

@@ -21,15 +21,13 @@ public:
 		float mSpeedChange;
 	UPROPERTY(EditAnywhere)
 		FVector mDirection;
-	float mDistance;
-	FVector mLastPosition;
-	UPROPERTY(EditAnywhere)
-		float mMaxDistance;
-	UPROPERTY(EditAnywhere)
-		bool mSpeedUp;
-	bool mUnderTimeEffect;
-	virtual void OnTimeEffect() override;
-	void PrintToScreen(FString text);
+	virtual void OnTimeEffectSlowed() override;
+	virtual void OnTimeEffectStopped() override;
+	virtual void OnTimeEffectReversed() override;
+	virtual void OnTimeEffectOver() override;
+	
+	UFUNCTION()
+		void OnHitObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
