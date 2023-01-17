@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TimeAffected.generated.h"
 
-enum TimeStages {SLOW, STOP, REVERSE};
+enum TimeStages {NORMAL, SLOW, STOP, REVERSE};
 
 UCLASS()
 class CMP302_COURSEWORK_API ATimeAffected : public AActor
@@ -35,13 +35,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void OnTimeEffect();
-
-	virtual void OnTimeEffectSlowed();
+	virtual void OnTimeEffectSlowed();	
 	virtual void OnTimeEffectStopped();
 	virtual void OnTimeEffectReversed();
-	virtual void OnTimeReverseCancelled();
+	virtual void OnTimeReverseCancelled();	
 	virtual void OnTimeEffectOver();
-	void PrintToScreen(FString text);
 	UFUNCTION(BlueprintCallable)
 		void HighlightObject();
 	UFUNCTION(BlueprintCallable)

@@ -15,6 +15,7 @@ ATimeAffected::ATimeAffected()
 void ATimeAffected::BeginPlay()
 {
 	Super::BeginPlay();
+	_mCurrentState = NORMAL;
 }
 
 // Called every frame
@@ -26,6 +27,7 @@ void ATimeAffected::Tick(float DeltaTime)
 		if (_mTimeLeftUnderEffect <= 0)
 		{
 			_mCurrentlyUnderTimeEffect = false;
+			_mCurrentState = NORMAL;
 			OnTimeEffectOver();
 		}
 		_mTimeLeftUnderEffect -= DeltaTime;
@@ -34,26 +36,23 @@ void ATimeAffected::Tick(float DeltaTime)
 
 void ATimeAffected::OnTimeEffect()
 {
+	if (_mCurrentState == REVERSE)
+		_mCurrentState = NORMAL;
+	_mCurrentState = (TimeStages)((int)_mCurrentState + 1);
 	switch (_mCurrentState)
 	{
 	case SLOW:
 		OnTimeEffectSlowed();
 		_mCurrentlyUnderTimeEffect = true;
 		_mTimeLeftUnderEffect = _mTimePerEffect;
-		_mCurrentState = STOP;
-		PrintToScreen("SLOWING");
 		break;
 	case STOP:
 		OnTimeEffectStopped();
 		_mTimeLeftUnderEffect = _mTimePerEffect;
-		_mCurrentState = REVERSE;
-		PrintToScreen("STOP");
 		break;
 	case REVERSE:
 		OnTimeEffectReversed();
 		_mTimeLeftUnderEffect = _mTimePerEffect;
-		_mCurrentState = SLOW;
-		PrintToScreen("REVERSE");
 		break;
 	}
 }
@@ -90,10 +89,7 @@ UStaticMeshComponent* ATimeAffected::GetStaticMesh()
 	return mStaticMesh;
 }
 
-void ATimeAffected::PrintToScreen(FString text)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
-}
+
 
 TimeStages ATimeAffected::GetCurrentTimeState()
 {

@@ -21,7 +21,7 @@ public:
 	virtual void OnTimeEffectStopped() override;
 	virtual void OnTimeEffectReversed() override;
 	virtual void OnTimeEffectOver() override;
-	void PrintToScreen(FString text);
+	
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

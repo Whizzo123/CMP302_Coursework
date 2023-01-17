@@ -20,6 +20,7 @@ void ATimeCharacter::BeginPlay()
 	this->OnActorHit.AddDynamic(this, &ATimeCharacter::OnHitPlayer);
 	_mSpawnPos = GetActorLocation();
 	_mInThirdPersonMode = true;
+	mTimeEffectImage->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void ATimeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -52,7 +53,7 @@ void ATimeCharacter::RewindTime()
 		if (_mCurrentTargetedTimeObject != nullptr)
 		{
 			_mCurrentTimeJuice -= 2.0f;
-			progressBar->SetPercent(_mCurrentTimeJuice / maxTimeJuice);
+			timeJuiceBar->SetPercent(_mCurrentTimeJuice / maxTimeJuice);
 			_mCurrentTargetedTimeObject->OnTimeEffect();
 		}
 	}
@@ -61,13 +62,9 @@ void ATimeCharacter::RewindTime()
 void ATimeCharacter::AddTimeJuice(float amountToAdd)
 {
 	_mCurrentTimeJuice += amountToAdd;
-	progressBar->SetPercent(_mCurrentTimeJuice / maxTimeJuice);
+	timeJuiceBar->SetPercent(_mCurrentTimeJuice / maxTimeJuice);
 }
 
-void ATimeCharacter::PrintToScreen(FString text)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
-}
 
 void ATimeCharacter::TimeLineTrace()
 {
@@ -100,9 +97,11 @@ void ATimeCharacter::TimeLineTrace()
 			}
 			timeObject->HighlightObject();
 			_mCurrentTargetedTimeObject = timeObject;
+			SetTimeEffectImageUI();
 		}
 		else
 			DisableTimeObjectHighlight();
+
 	}
 	else
 		DisableTimeObjectHighlight();
@@ -113,7 +112,6 @@ void ATimeCharacter::OnHitPlayer(AActor* SelfActor, AActor* OtherActor, FVector 
 	ATimeSpeedCube* hitSpeedCube = Cast<ATimeSpeedCube>(OtherActor);
 	if (hitSpeedCube != nullptr)
 	{
-		PrintToScreen("Hit");
 		SetActorLocation(_mSpawnPos);
 	}
 }
@@ -125,7 +123,6 @@ void ATimeCharacter::CancelRewind()
 		ATimeCube* timeCube = Cast<ATimeCube>(_mCurrentTargetedTimeObject);
 		if (timeCube != nullptr)
 			timeCube->ClearRewind();
-
 	}
 }
 
@@ -136,6 +133,7 @@ void ATimeCharacter::DisableTimeObjectHighlight()
 		_mCurrentTargetedTimeObject->UnHighlightObject();
 		_mCurrentTargetedTimeObject = nullptr;
 	}
+	mTimeEffectImage->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void ATimeCharacter::SetHoldingTimeButton()
@@ -172,4 +170,26 @@ void ATimeCharacter::SwitchCameras()
 		SwitchToFirstPerson();
 	else
 		SwitchToThirdPerson();
+}
+
+void ATimeCharacter::SetTimeEffectImageUI()
+{
+	//Sample current time effect on time object
+	//Change image to that time effect image from stored images
+	TimeStages state = _mCurrentTargetedTimeObject->GetCurrentTimeState();
+	switch (state)
+	{
+	case SLOW:
+		mTimeEffectImage->SetBrushFromTexture(slowTimeEffectImage);
+		break;
+	case STOP:
+		mTimeEffectImage->SetBrushFromTexture(stopTimeEffectImage);
+		break;
+	case REVERSE:
+		mTimeEffectImage->SetBrushFromTexture(reverseTimeEffectImage);
+		break;
+	case NORMAL:
+		mTimeEffectImage->SetBrushFromTexture(normalTimeEffectImage);
+	}
+	mTimeEffectImage->SetVisibility(ESlateVisibility::Visible);
 }

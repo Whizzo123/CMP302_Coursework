@@ -29,7 +29,7 @@ protected:
 	FVector _mClosePosition;
 	UStaticMeshComponent* _mStaticMesh;
 	void Move(int direction, float dt);
-	void PrintToScreen(FString text);
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

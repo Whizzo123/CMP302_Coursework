@@ -8,7 +8,6 @@ ATimeCube::ATimeCube()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	mVelocityThreshold = 0.05f;
 	mRewinding = false;
 	mRewindIndex = -1;
 }
@@ -63,11 +62,11 @@ void ATimeCube::Tick(float DeltaTime)
 
 void ATimeCube::OnTimeEffectSlowed()
 {
-	PrintToScreen("Calling on time effect slowed");
+	
 }
 void ATimeCube::OnTimeEffectStopped()
 {
-	PrintToScreen("Calling on time effect stopped");
+	
 }
 void ATimeCube::OnTimeEffectReversed()
 {
@@ -80,7 +79,6 @@ void ATimeCube::OnTimeEffectReversed()
 
 void ATimeCube::OnTimeReverseCancelled()
 {
-	PrintToScreen("On Time Reverse Cancelled");
 	mRewinding = false;
 	GetStaticMesh()->SetSimulatePhysics(true);
 	mRecordedPositions.Empty();
@@ -88,7 +86,7 @@ void ATimeCube::OnTimeReverseCancelled()
 
 void ATimeCube::OnTimeEffectOver()
 {
-	_mCurrentState = SLOW;
+	
 }
 
 void ATimeCube::ClearRewind()
@@ -103,9 +101,4 @@ void ATimeCube::Delay(float duration, float deltaTime)
 	{
 		currentDuration += deltaTime;
 	}
-}
-
-void ATimeCube::PrintToScreen(FString text)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
 }

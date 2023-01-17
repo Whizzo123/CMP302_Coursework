@@ -22,16 +22,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TArray<FVector> mRecordedPositions;
 	int32 mRewindIndex;
-	UPROPERTY(EditAnywhere)
-		int32 mStepsToRewind;
 	bool mRewinding;
-	bool mMoving;
-	UPROPERTY(EditAnywhere)
-		float mVelocityThreshold;
 	UPROPERTY(EditAnywhere)
 		float mRewindSpeed;
-	UPROPERTY(EditAnywhere)
-		float mRecordWaitTime;
 	UPROPERTY(EditAnywhere)
 		float mThresholdRecordDistance;
 	virtual void OnTimeEffectSlowed() override;
@@ -42,7 +35,6 @@ protected:
 	
 protected:
 	void Delay(float duration, float deltaTime);
-	void PrintToScreen(FString message);
 
 	FVector _mLastRecordedPosition;
 public:	

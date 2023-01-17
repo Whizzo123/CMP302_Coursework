@@ -16,7 +16,6 @@ void ATimeSpeedCube::BeginPlay()
 {
 	Super::BeginPlay();
 	SetStaticMesh(FindComponentByClass<UStaticMeshComponent>());
-	mLastPosition = GetStaticMesh()->GetComponentLocation();
 	mSpeed = mDefaultSpeed;
 	GetStaticMesh()->SetNotifyRigidBodyCollision(true);
 	this->OnActorHit.AddDynamic(this, &ATimeSpeedCube::OnHitObject);
@@ -28,13 +27,6 @@ void ATimeSpeedCube::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector vel = mDirection * (mSpeed * DeltaTime);
 	GetStaticMesh()->SetPhysicsLinearVelocity(vel);
-	mDistance = FVector::Distance(GetStaticMesh()->GetComponentLocation(), mLastPosition);
-	if (mDistance > mMaxDistance)
-	{
-		mDirection = mDirection * -1;
-		mDistance = 0.0f;
-		mLastPosition = GetStaticMesh()->GetComponentLocation();
-	}
 }
 
 void ATimeSpeedCube::OnTimeEffectSlowed()
@@ -57,19 +49,13 @@ void ATimeSpeedCube::OnTimeEffectOver()
 	{
 		mDirection *= -1;
 	}
-	_mCurrentState = SLOW;
 }
 
 
 
-void ATimeSpeedCube::PrintToScreen(FString text)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
-}
+
 
 void ATimeSpeedCube::OnHitObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
 	mDirection = mDirection * -1;
-	mDistance = 0.0f;
-	mLastPosition = GetStaticMesh()->GetComponentLocation();
 }

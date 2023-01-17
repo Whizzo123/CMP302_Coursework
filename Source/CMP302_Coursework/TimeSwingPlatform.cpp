@@ -48,13 +48,6 @@ void ATimeSwingPlatform::OnTimeEffectReversed()
 void ATimeSwingPlatform::OnTimeEffectOver()
 {
 	rotationSpeed = _mDefaultRotationSpeed;
-	PrintToScreen("Effect Over");
-	_mCurrentState = SLOW;
 }
 
 
-
-void ATimeSwingPlatform::PrintToScreen(FString text)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
-}

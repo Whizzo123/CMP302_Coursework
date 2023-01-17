@@ -50,8 +50,3 @@ void AEventGate::Move(int direction, float dt)
 	FVector moveVec = (((mGateOpenDirection * direction) * (mGateOpenSpeed * dt)) + _mStaticMesh->GetComponentLocation());
 	_mStaticMesh->SetWorldLocation(moveVec);
 }
-
-void AEventGate::PrintToScreen(FString text)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, *text);
-}

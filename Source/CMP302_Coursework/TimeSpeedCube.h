@@ -21,18 +21,11 @@ public:
 		float mSpeedChange;
 	UPROPERTY(EditAnywhere)
 		FVector mDirection;
-	float mDistance;
-	FVector mLastPosition;
-	UPROPERTY(EditAnywhere)
-		float mMaxDistance;
-	UPROPERTY(EditAnywhere)
-		bool mSpeedUp;
-	bool mUnderTimeEffect;
 	virtual void OnTimeEffectSlowed() override;
 	virtual void OnTimeEffectStopped() override;
 	virtual void OnTimeEffectReversed() override;
 	virtual void OnTimeEffectOver() override;
-	void PrintToScreen(FString text);
+	
 	UFUNCTION()
 		void OnHitObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 protected:
